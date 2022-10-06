@@ -1,9 +1,12 @@
+require("dotenv").config();
+
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var multer = require("multer");
 var session = require("express-session");
+const passport = require("passport");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -49,6 +52,7 @@ db.sequelize
     console.log(err.message);
   });
 
+app.use(passport.initialize());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -59,6 +63,8 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("thumbnail")
 );
+
+require("./auth");
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);

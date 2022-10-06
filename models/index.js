@@ -19,6 +19,7 @@ db.sequelize = sequelize;
 
 db.news = require("./news")(sequelize, Sequelize);
 db.comments = require("./comments")(sequelize, Sequelize);
+db.users = require("./users")(sequelize, Sequelize);
 
 db.news.hasMany(db.comments);
 db.comments.belongsTo(db.news, { foreignKey: "newsId" });
