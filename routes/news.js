@@ -20,6 +20,19 @@ router.get("/", function (req, res, next) {
     });
 });
 
+router.get("/deleted", function (req, res, next) {
+  News.findAll({ where: { destroyTime: { [Op.not]: null } }, paranoid: false })
+    .then((data) => {
+      res.json({ data });
+    })
+    .catch((err) => {
+      res.json({
+        info: "Error",
+        msg: err,
+      });
+    });
+});
+
 router.get("/:id", function (req, res, next) {
   News.findByPk(req.params.id)
     .then((data) => {
@@ -40,10 +53,13 @@ router.get("/:id", function (req, res, next) {
 });
 
 router.post("/", function (req, res, next) {
+  if (!req.file) {
+    res.json({ msg: "Image not found" });
+  }
   var news = {
     title: req.body.title,
     content: req.body.content,
-    thumbnail: req.body.thumbnail,
+    thumbnail: req.file.path,
     author: req.body.author,
   };
   News.create(news)
